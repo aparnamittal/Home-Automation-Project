@@ -1,9 +1,9 @@
 # Home-Automation-Project
-This is a IoT based Smart Home Automation Project build using ESP32 to control an 8-channel relay module from smartphone using the MIT App Inventor.
+This is a IoT based Smart Home Automation Project build using ESP32 to control an 4-channel relay module from smartphone using the MIT App Inventor.
 and it will also display which device is ON/OFF on the OLED display.
 
 # Tools Used: 
-Aurdiuno IDE, OLED Display, ESP-32 Development Board,8-channel relay module.
+Aurdiuno IDE, OLED Display, ESP-32 Development Board,4-channel relay module.
 
 
 # Project:
