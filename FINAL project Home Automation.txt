@@ -1,0 +1,144 @@
+// --------------------------------------------------
+//
+// Code for control of ESP32 through MIT inventor app (Bluetooth). 
+// device used for tests: ESP32-WROOM-32D
+
+
+// this header is needed for Bluetooth Serial -> works ONLY on ESP32
+#include "BluetoothSerial.h" 
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// init Class:
+BluetoothSerial ESP_BT; 
+int led1=25;
+int led2=26;
+int led3=27;
+int led4=14;
+// init PINs: assign any pin on ESP32
+
+//defining size of OLED display
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+//status strings
+String light="OFF";
+String fan="OFF";
+String lamp="OFF";
+String tv="OFF";
+
+
+
+// Parameters for Bluetooth interface
+int incoming;
+
+void setup() {
+  Serial.begin(9600);
+  ESP_BT.begin("ESP32_Control"); //Name of your Bluetooth interface -> will show up on your phone
+  initialize();
+  
+  pinMode(led1,OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+  pinMode(led4,OUTPUT);
+  digitalWrite(led1,HIGH);
+  digitalWrite(led2,HIGH);
+  digitalWrite(led3,HIGH);
+  digitalWrite(led4,HIGH);
+  disp();
+
+}
+
+void loop() {
+
+  
+  // -------------------- Receive Bluetooth signal ----------------------
+  if (ESP_BT.available()) 
+  {
+    incoming = ESP_BT.read(); //Read what we receive
+  if(incoming==10){
+     digitalWrite(led1,HIGH);
+     light="OFF";
+  }
+  if(incoming==11){
+    digitalWrite(led1,LOW);
+    light="ON";
+  }
+  if(incoming==20){
+     digitalWrite(led2,HIGH);
+     fan="OFF";
+
+  }
+  if(incoming==21){
+    digitalWrite(led2,LOW);
+    fan="ON";
+  }
+  if(incoming==30){
+     digitalWrite(led3,HIGH);
+     lamp="OFF";
+
+  }
+  if(incoming==31){
+    digitalWrite(led3,LOW);
+    lamp="ON";
+  }
+  if(incoming==40){
+     digitalWrite(led4,HIGH);
+     tv="OFF";
+
+  }
+  if(incoming==41){
+    digitalWrite(led4,LOW);
+    tv="ON";
+  }
+     
+   
+  }
+  
+  disp();
+  
+  
+}
+void initialize(){
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+     // Don't proceed, loop forever
+  }
+  display.clearDisplay();
+}
+void disp(){
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.print("LIGHT:");
+  display.setTextSize(2);
+  display.setCursor(0,10);
+  display.print(light);
+  display.setTextSize(1);
+  display.setCursor(0,32);
+  display.print("FAN:");
+  display.setTextSize(2);
+  display.setCursor(0,40);
+  display.print(fan);
+  display.setCursor(64,0);
+  display.setTextSize(1);
+  display.print("LAMP:");
+  display.setCursor(64,10);
+  display.setTextSize(2);
+  display.print(lamp);
+  display.setTextSize(1);
+  display.setCursor(64,32);
+  display.print("TV:");
+  display.setTextSize(2);
+  display.setCursor(64,40);
+  display.print(tv);
+  display.display();
+
+}
+
+
+
